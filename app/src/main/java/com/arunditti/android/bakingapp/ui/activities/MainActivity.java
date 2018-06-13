@@ -19,6 +19,16 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Create a new MainActivityFragment instance and display it using the FragmentManager
+        MainActivityFragment mainActivityFragment = new MainActivityFragment();
+
+        //Use a FragmentManager and transaction to add the fragment to the screen
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        //Fragment transaction
+        fragmentManager.beginTransaction().add(R.id.master_list_fragment, mainActivityFragment);
+
     }
 
     @Override

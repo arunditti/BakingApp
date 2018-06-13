@@ -10,23 +10,23 @@ import java.util.ArrayList;
  */
 
 public class Recipe implements Parcelable {
-    private int recipeId;
-    private String recipeName;
+    public int recipeId;
+    public String recipeName;
     private ArrayList<RecipeIngredient> recipeIngredients;
     private ArrayList<RecipeStep> recipeSteps;
     private String recipeThumbnailUrl;
     private String servings;
-    private String recipeImageUrl;
+    public String recipeImage;
 
     public Recipe(int id, String name, ArrayList<RecipeIngredient> ingredients,
-                  ArrayList<RecipeStep> steps, String thumbnailUrl, String servings, String imageUrl) {
+                  ArrayList<RecipeStep> steps, String thumbnailUrl, String servings, String image) {
         this.recipeId = id;
         this.recipeName = name;
         this.recipeIngredients = ingredients;
         this.recipeSteps = steps;
         this.recipeThumbnailUrl = thumbnailUrl;
         this.servings = servings;
-        this.recipeImageUrl = imageUrl;
+        this.recipeImage = image;
     }
 
     private Recipe(Parcel in) {
@@ -38,7 +38,7 @@ public class Recipe implements Parcelable {
         recipeSteps = in.createTypedArrayList(RecipeStep.CREATOR);
         recipeThumbnailUrl = in.readString();
         servings = in.readString();
-        recipeImageUrl = in.readString();
+        recipeImage = in.readString();
     }
 
     public static final Creator<Recipe> CREATOR = new Creator<Recipe>() {
@@ -66,7 +66,7 @@ public class Recipe implements Parcelable {
         parcel.writeTypedList(recipeSteps);
         parcel.writeString(recipeThumbnailUrl);
         parcel.writeString(servings);
-        parcel.writeString(recipeImageUrl);
+        parcel.writeString(recipeImage);
     }
 
     public int getRecipeId() {
@@ -93,7 +93,7 @@ public class Recipe implements Parcelable {
         return servings;
     }
 
-    public String getRecipeImageUrl() {
-        return recipeImageUrl;
+    public String getRecipeImage() {
+        return recipeImage;
     }
 }
