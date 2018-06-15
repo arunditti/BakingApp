@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class Recipe implements Parcelable {
     public int recipeId;
     public String recipeName;
-    private ArrayList<RecipeIngredient> recipeIngredients;
-    private ArrayList<RecipeStep> recipeSteps;
+    private ArrayList<RecipeIngredient> recipeIngredients = new ArrayList<>();
+    private ArrayList<RecipeStep> recipeSteps = new ArrayList<>();
     private String recipeThumbnailUrl;
     private String servings;
     public String recipeImage;
@@ -32,10 +32,8 @@ public class Recipe implements Parcelable {
     private Recipe(Parcel in) {
         recipeId = in.readInt();
         recipeName = in.readString();
-        //in.readList(recipeIngredients, RecipeIngredient.class.getClassLoader());
-        recipeIngredients = in.createTypedArrayList(RecipeIngredient.CREATOR);
-        //in.readList(recipeSteps, RecipeStep.class.getClassLoader());
-        recipeSteps = in.createTypedArrayList(RecipeStep.CREATOR);
+        in.readTypedList(recipeIngredients,RecipeIngredient.CREATOR);
+        in.readTypedList(recipeSteps, RecipeStep.CREATOR);
         recipeThumbnailUrl = in.readString();
         servings = in.readString();
         recipeImage = in.readString();
