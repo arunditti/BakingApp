@@ -1,70 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<ImageView-->
-        <!--android:id="@+id/iv_recipe_detail_image"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--android:layout_marginTop="40dp"-->
-        <!--app:layout_constraintEnd_toStartOf="@+id/tv_recipe_name_detail"-->
-        <!--app:layout_constraintHorizontal_bias="0.356"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--app:srcCompat="@android:drawable/btn_star_big_on" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_recipe_name_detail"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="31dp"-->
-        <!--android:layout_marginEnd="104dp"-->
-        <!--android:layout_marginTop="28dp"-->
-        <!--android:text="TextView"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_servings_detail"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="29dp"-->
-        <!--android:layout_marginEnd="104dp"-->
-        <!--android:layout_marginTop="24dp"-->
-        <!--android:text="TextView"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintTop_toBottomOf="@+id/tv_recipe_name_detail"-->
-        <!--tools:ignore="MissingConstraints" />-->
-
-    <!--<TextView-->
-        <!--android:id="@+id/tv_ingredients_list_detail"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginBottom="40dp"-->
-        <!--android:layout_marginStart="48dp"-->
-        <!--android:text="TextView"-->
-        <!--app:layout_constraintBottom_toTopOf="@+id/rv_recipe_list"-->
-        <!--app:layout_constraintEnd_toStartOf="@+id/tv_servings_detail"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--android:layout_marginLeft="48dp" />-->
-
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/rv_recipe_list"-->
-        <!--android:layout_width="139dp"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:layout_marginStart="8dp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintHorizontal_bias="0.502"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--tools:layout_editor_absoluteY="214dp"-->
-        <!--tools:ignore="MissingConstraints" />-->
-<!--</android.support.constraint.ConstraintLayout>-->
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/detail_scrollView"
@@ -91,21 +26,35 @@
     android:id="@+id/tv_servings_detail"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_below="@+id/recipe_name" />
+    android:layout_below="@+id/tv_recipe_name_detail"
+        android:layout_toRightOf="@+id/iv_recipe_detail_image"/>
 
-    <TextView
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cv_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            card_view:cardElevation="3dp"
+            card_view:cardCornerRadius="3dp"
+            card_view:cardUseCompatPadding="true"
+            android:layout_below="@+id/iv_recipe_detail_image">
+
+
+        <TextView
     android:id="@+id/tv_ingredients_list_detail"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_recipe_detail_image"/>
+    android:layout_height="wrap_content"/>
+
+        </android.support.v7.widget.CardView>
 
     <!--RecyclerView for holding list of recipes-->
     <android.support.v7.widget.RecyclerView
-    android:id="@+id/rv_recipe_list"
+    android:id="@+id/rv_recipe_steps"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="vertical"
-        android:layout_below="@+id/tv_ingredients_list_detail"></android.support.v7.widget.RecyclerView>
+        android:layout_below="@+id/cv_list"></android.support.v7.widget.RecyclerView>
 
     <TextView
     android:id="@+id/tv_error_message_display"

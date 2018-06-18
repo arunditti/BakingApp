@@ -22,4 +22,8 @@ public class DetailActivity extends AppCompatActivity {
         Intent intentThatStartedThisActivity = getIntent();
         mCurrentRecipe = intentThatStartedThisActivity.getParcelableExtra(DETAILS_KEY);
     }
+
+    public void onRecipeStepSelected(int recipeStepClicked) {
+
+    }
 }

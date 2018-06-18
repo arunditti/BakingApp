@@ -64,8 +64,8 @@ public class JsonUtils {
             JSONArray recipeIngredientsArray = recipe.getJSONArray(JSON_RECIPE_INGREDIENTS);
             ArrayList<RecipeIngredient> recipeIngredients = new ArrayList<RecipeIngredient>();
 
-            for( int iIngredients = 0; iIngredients < recipeIngredientsArray.length(); iIngredients++) {
-                JSONObject ingredients = recipeIngredientsArray.getJSONObject(i);
+            for( int j = 0; j < recipeIngredientsArray.length(); j++) {
+                JSONObject ingredients = recipeIngredientsArray.getJSONObject(j);
                 int quantiy = ingredients.optInt(JSON_RECIPE_QUALTITY);
                 String measure = ingredients.optString(JSON_RECIPE_MEASURE);
                 String ingredient = ingredients.optString(JSON_RECIPE_INGREDIENT);
@@ -76,8 +76,8 @@ public class JsonUtils {
             JSONArray recipeStepsArray = recipe.getJSONArray(JSON_RECIPE_STEPS);
             ArrayList<RecipeStep> recipeSteps = new ArrayList<RecipeStep>();
 
-            for( int iSteps = 0; iSteps < recipeStepsArray.length(); iSteps++) {
-                JSONObject steps = recipeStepsArray.getJSONObject(i);
+            for( int k = 0; k < recipeStepsArray.length(); k++) {
+                JSONObject steps = recipeStepsArray.getJSONObject(k);
                 int stepsId = steps.optInt(JSON_RECIPE_ID);
                 String shortDescription = steps.optString(JSON_RECIPE_SHORT_DESCRIPTION);
                 String description = steps.optString(JSON_RECIPE_DESCRIPTION);

@@ -45,7 +45,7 @@ public class MainActivityFragment extends Fragment implements RecipeAdapter.Reci
     int RECIPE_LOADER_ID = 100;
 
     private RecipeAdapter mAdapter;
-    RecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
 
