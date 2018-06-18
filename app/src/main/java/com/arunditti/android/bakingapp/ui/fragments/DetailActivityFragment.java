@@ -55,6 +55,8 @@ public class DetailActivityFragment extends Fragment {
         name.setText(mCurrentRecipe.getRecipeName());
         servings.setText(mCurrentRecipe.getServings());
 
+        StringBuilder stringBuilder = new StringBuilder();
+
         if (mCurrentRecipe.getRecipeIngredients().isEmpty()) {
             ingredients.setText(R.string.error_message);
         } else {
@@ -63,13 +65,17 @@ public class DetailActivityFragment extends Fragment {
                 Log.d(LOG_TAG, "*****Ingredient list is: " +ingredientsList);
                 Log.d(LOG_TAG, "*****Ingredient list size is: " +ingredientsList.size());
 
+                stringBuilder.append(ingredientsList.get(i).getIngredientName());
+               stringBuilder.append(ingredientsList.get(i).getQuantity());
+               stringBuilder.append(ingredientsList.get(i).getMeasure());
 
 //                ingredientsList.add(new RecipeIngredient(ingredientsList.get(i).getQuantity(),
 //                        ingredientsList.get(i).getMeasure(),
 //                        ingredientsList.get(i).getIngredientName()));
             }
 
-            ingredients.setText(TextUtils.join("\n", ingredientsList));
+            String displayIngredients = stringBuilder.toString();
+            ingredients.setText(displayIngredients);
         }
 
 
