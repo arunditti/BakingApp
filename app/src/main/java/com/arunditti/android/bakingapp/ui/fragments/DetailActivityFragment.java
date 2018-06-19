@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.arunditti.android.bakingapp.R;
@@ -29,8 +32,7 @@ import java.util.ArrayList;
  * Created by arunditti on 6/14/18.
  */
 
-public class DetailActivityFragment extends Fragment implements RecipeStepsAdapter.RecipeStepsAdapterOnClickHandler
-{
+public class DetailActivityFragment extends Fragment implements RecipeStepsAdapter.RecipeStepsAdapterOnClickHandler {
 
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
@@ -38,6 +40,10 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     private Recipe mCurrentRecipe;
     private RecipeStepsAdapter mStepsAdapter;
     private RecyclerView mRecyclerView;
+
+    private TextView mErrorMessageDisplay;
+    private ProgressBar mLoadingIndicator;
+
     private ArrayList<RecipeStep> mRecipeSteps = new ArrayList<RecipeStep>();
 
 
@@ -45,27 +51,26 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
 //    private FragmentRecipeDetailBinding mDetailBinding;
 
     //Interface that triggers a callback in the host activity
+    onRecipeStepClickListener mCallBack;
 
-//    onRecipeStepClickListener mCallBack;
-//
 //   // Interface that triggers a callback in the host activity
-//    public interface onRecipeStepClickListener {
-//        void onRecipeStepSelected(RecipeStep recipeClicked);
-//    }
+    public interface onRecipeStepClickListener {
+        void onRecipeStepSelected(RecipeStep recipeClicked);
+    }
 
 //    //Override onAttach to make sure that the conteiner activity has implemented the callback
-//    @Override
-//    public void onAttach(Context context) {
-//
-//        super.onAttach(context);
-//
-//        //This makes sure that the host activity has implemented the callback interface. If not, it throws an exception
-//        try {
-//            mCallBack = (onRecipeStepClickListener) context;
-//        } catch (ClassCastException e ) {
-//            throw new ClassCastException(context.toString() + " must implement OnRecipesStepClickListener");
-//        }
-//    }
+    @Override
+    public void onAttach(Context context) {
+
+        super.onAttach(context);
+
+        //This makes sure that the host activity has implemented the callback interface. If not, it throws an exception
+        try {
+            mCallBack = (onRecipeStepClickListener) context;
+        } catch (ClassCastException e ) {
+            throw new ClassCastException(context.toString() + " must implement OnRecipesStepClickListener");
+        }
+    }
 
     //Mandatory empty constructor
     public DetailActivityFragment(){
@@ -75,8 +80,8 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
 
-        Intent intent = getActivity().getIntent();
-        mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
+            Intent intent = getActivity().getIntent();
+            mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
 
         ImageView recipeImage = rootView.findViewById(R.id.iv_recipe_detail_image);
         TextView name = rootView.findViewById(R.id.tv_recipe_name_detail);
@@ -93,8 +98,6 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
         } else {
             ArrayList<RecipeIngredient> ingredientsList = mCurrentRecipe.getRecipeIngredients();
             for (int i = 0; i < ingredientsList.size(); i++) {
-                Log.d(LOG_TAG, "*****Ingredient list is: " +ingredientsList);
-                Log.d(LOG_TAG, "*****Ingredient list size is: " +ingredientsList.size());
                 stringBuffer.append(" ")
                         .append(ingredientsList.get(i).getIngredientName() + "  ")
                         .append(ingredientsList.get(i).getQuantity() + " ")
@@ -103,6 +106,9 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
 
             String displayIngredients = stringBuffer.toString();
             ingredients.setText(displayIngredients);
+
+            Log.d(LOG_TAG, "*****Ingredient list is: " +ingredientsList);
+            Log.d(LOG_TAG, "*****Ingredient list size is: " +ingredientsList.size());
         }
 
         if(mCurrentRecipe.getRecipeImage().isEmpty()) {
@@ -129,15 +135,33 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
         //Link adapter to the RecyclerView
         mRecyclerView.setAdapter(mStepsAdapter);
 
-//        ActionBar actionBar = (AppCompatActivity) getActivity().getSupportActionBar();
-//        actionBar.setTitle(mCurrentRecipe.getRecipeName());
+        //Action to display recipe name
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar.setTitle(mCurrentRecipe.recipeName);
+
+         /* This TextView is used to display errors and will be hidden if there are no errors */
+        mErrorMessageDisplay = rootView.findViewById(R.id.tv_error_message_display);
+        mLoadingIndicator = rootView.findViewById(R.id.pb_loading_indicator);
 
         return rootView;
     }
 
+    private void showRecipeDataView() {
+        //First make sure error is invisible
+        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+        //Then make sure recipe data is visible
+        mRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorMessage() {
+        //First hide currently visible data
+        mRecyclerView.setVisibility(View.INVISIBLE);
+        //Then show the error
+        mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onClick(RecipeStep recipeStepClicked) {
-     //   mCallBack.onRecipeStepSelected(recipeStepClicked);
-
+        mCallBack.onRecipeStepSelected(recipeStepClicked);
     }
 }

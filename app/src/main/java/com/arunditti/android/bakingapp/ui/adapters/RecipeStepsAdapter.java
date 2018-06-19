@@ -40,6 +40,7 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     @Override
     public RecipeStepsAdapter.RecipeStepsAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
+
         //Get the RecyclerView item layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.recipe_step_item, parent, false);
@@ -48,8 +49,19 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull RecipeStepsAdapter.RecipeStepsAdapterViewHolder holder, int position) {
-        holder.recipeShortDescription.setText(mRecipeStep.get(position).getShortDescription());
-        //holder.recipeStepNumber.setText(mRecipeStep.get(position).getId());
+
+        int recipeNumber = mRecipeStep.get(position).getId();
+        String recipeDescription = mRecipeStep.get(position).getShortDescription();
+
+        StringBuffer stringBuffer = new StringBuffer();
+
+        stringBuffer.append("Step: ")
+                .append(recipeNumber + " ")
+                .append(recipeDescription);
+        String steps = stringBuffer.toString();
+        holder.recipeShortDescription.setText(steps);
+
+        //holder.recipeShortDescription.setText(mRecipeStep.get(position).getShortDescription());
     }
 
     @Override
@@ -60,13 +72,11 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     public class RecipeStepsAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         CardView cardView;
-        TextView recipeStepNumber;
         TextView recipeShortDescription;
 
         public RecipeStepsAdapterViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView.findViewById(R.id.cv_steps);
-            recipeStepNumber = itemView.findViewById(R.id.recipe_step_Number);
             recipeShortDescription = itemView.findViewById(R.id.recipe_short_Description);
 
             itemView.setOnClickListener(this);

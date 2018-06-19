@@ -124,7 +124,6 @@ public class MainActivityFragment extends Fragment implements RecipeAdapter.Reci
         mCallBack.onRecipeSelected(recipeClicked);
     }
 
-    //Suggested by the reviewer
     private int calculateBestSpanCount(int imageWidth) {
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
