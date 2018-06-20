@@ -18,6 +18,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
     private static final String STEP_KEY ="Recipe_step";
     private Recipe mCurrentRecipe;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +31,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
     @Override
     public void onRecipeStepSelected(RecipeStep recipeStepClicked) {
         Intent intentToStartRecipeStepActivity = new Intent(this, RecipeStepActivity.class);
+        intentToStartRecipeStepActivity.putExtra(DETAILS_KEY, mCurrentRecipe);
         intentToStartRecipeStepActivity.putExtra(STEP_KEY, recipeStepClicked);
         startActivity(intentToStartRecipeStepActivity);
     }

@@ -43,7 +43,7 @@ public class JsonUtils {
     private static final String JSON_RECIPE_SHORT_DESCRIPTION = "shortDescription";
     private static final String JSON_RECIPE_DESCRIPTION = "description";
     private static final String JSON_RECIPE_VIDEO_URL = "videoURL";
-    private static final String JSON_RECIPE_THUMBNAIL = "thumbnail";
+    private static final String JSON_RECIPE_THUMBNAIL = "thumbnailURL";
     private static final String JSON_RECIPE_SERVINGS = "servings";
     private static final String JSON_RECIPE_IMAGE = "image";
 

@@ -13,6 +13,7 @@ public class RecipeStepActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = RecipeStepActivity.class.getSimpleName();
 
+    private static final String DETAILS_KEY = "Recipe_parcel";
     private static final String STEP_KEY = "Recipe_step";
     private Recipe mCurrentRecipe;
     private RecipeStep mCurrentStep;
@@ -22,6 +23,7 @@ public class RecipeStepActivity extends AppCompatActivity {
         setContentView(R.layout.activity_recipe_step);
 
         Intent intentThatStartedThisActivity = getIntent();
+        mCurrentRecipe = intentThatStartedThisActivity.getParcelableExtra(DETAILS_KEY);
         mCurrentStep = intentThatStartedThisActivity.getParcelableExtra(STEP_KEY);
     }
 }

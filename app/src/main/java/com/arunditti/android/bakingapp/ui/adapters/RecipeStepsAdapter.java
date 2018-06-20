@@ -50,13 +50,13 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
     @Override
     public void onBindViewHolder(@NonNull RecipeStepsAdapter.RecipeStepsAdapterViewHolder holder, int position) {
 
-        int recipeNumber = mRecipeStep.get(position).getId();
+        int recipeStepNumber = mRecipeStep.get(position).getId();
         String recipeDescription = mRecipeStep.get(position).getShortDescription();
 
         StringBuffer stringBuffer = new StringBuffer();
 
         stringBuffer.append("Step: ")
-                .append(recipeNumber + " ")
+                .append(recipeStepNumber + " ")
                 .append(recipeDescription);
         String steps = stringBuffer.toString();
         holder.recipeShortDescription.setText(steps);
