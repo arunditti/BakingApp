@@ -1,7 +1,11 @@
 package com.arunditti.android.bakingapp.ui.fragments;
 
 import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,19 +17,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arunditti.android.bakingapp.R;
 import com.arunditti.android.bakingapp.model.Recipe;
 import com.arunditti.android.bakingapp.model.RecipeStep;
 import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
@@ -33,12 +44,13 @@ import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 
 /**
  * Created by arunditti on 6/18/18.
  */
 
-public class RecipeStepFragment extends Fragment {
+public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListener{
 
     private static final String LOG_TAG = RecipeStepFragment.class.getSimpleName();
 
@@ -56,8 +68,13 @@ public class RecipeStepFragment extends Fragment {
     private ImageView mThumbnail;
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mExoPlayerView;
+    private MediaSessionCompat mMediaSession;
+    private PlaybackStateCompat.Builder mStateBuilder;
+
     private String mThumbnailUrl;
     private String mVideoUrl;
+    private View mRootView;
+
 
     //Mandatory empty constructor
     public RecipeStepFragment() {
@@ -67,7 +84,7 @@ public class RecipeStepFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle onsaveInstanceState) {
 
-        final View rootView = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
 
         final Intent intent = getActivity().getIntent();
         mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
@@ -79,51 +96,86 @@ public class RecipeStepFragment extends Fragment {
         mClickedStepNumber = mCurrentStep.getId();
         mCurrentStepClicked = mRecipeSteps.get(mClickedStepNumber);
 
-        mExoPlayerView = rootView.findViewById(R.id.exo_player_view_step_video);
+        mExoPlayerView = mRootView.findViewById(R.id.exo_player_view_step_video);
         mExoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background));
 
-        TextView StepDescription = rootView.findViewById(R.id.tv_step_description);
+        TextView StepDescription = mRootView.findViewById(R.id.tv_step_description);
         StepDescription.setText(mCurrentStepClicked.getDescription());
 
-        mThumbnail = rootView.findViewById(R.id.iv_step_thumbnail);
+        mThumbnail = mRootView.findViewById(R.id.iv_step_thumbnail);
         mThumbnailUrl = mCurrentStepClicked.getThumbnailUrl();
-        mVideoUrl = mCurrentStepClicked.getVideoUrl();
         Log.d(LOG_TAG, "***** Thumbnail url is: " + mThumbnailUrl);
+
+        mVideoUrl = mCurrentStepClicked.getVideoUrl();
         Log.d(LOG_TAG, "***** Video url is: " + mVideoUrl);
 
-        // Initialize the player.
-       // initializePlayer(Uri.parse(thumbnailUrl));
-        initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
+        ProgressBar pbExoLoadingIndicator = mRootView.findViewById(R.id.pb_exo_loading_indicator);
 
-        if(mThumbnailUrl.isEmpty()) {
-            mThumbnail.setImageResource(R.drawable.ic_launcher_foreground);
-        } else {
-            Picasso.with(getActivity())
-                    .load(mThumbnailUrl)
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .error(R.drawable.ic_launcher_background)
-                    .into(mThumbnail);
-        }
-
-        mButtonPreviousStep = rootView.findViewById(R.id.button_previous_step);
+        mButtonPreviousStep = mRootView.findViewById(R.id.button_previous_step);
         mButtonPreviousStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Code here to go to previous step
+                mClickedStepNumber--;
+                Toast.makeText(getActivity(), "clicked step " + mClickedStepNumber, Toast.LENGTH_SHORT).show();
             }
         });
 
-        mButtonNextStep = rootView.findViewById(R.id.button_next_step);
+        mButtonNextStep = mRootView.findViewById(R.id.button_next_step);
         mButtonNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Code for next step comes here
+                mClickedStepNumber++;
+                Toast.makeText(getActivity(), "clicked step " + mClickedStepNumber, Toast.LENGTH_SHORT).show();
             }
         });
+
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(mRecipeName + " Step: " + mClickedStepNumber);
 
-        return rootView;
+        // Initialize the Media Session.
+        initializeMediaSession();
+
+        // Initialize the player.
+        initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
+
+        return mRootView;
+    }
+
+    /**
+     * Initializes the Media Session to be enabled with media buttons, transport controls, callbacks
+     * and media controller.
+     */
+    private void initializeMediaSession() {
+
+        // Create a MediaSessionCompat.
+        mMediaSession = new MediaSessionCompat(getActivity(), LOG_TAG);
+
+        // Enable callbacks from MediaButtons and TransportControls.
+        mMediaSession.setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        // Do not let MediaButtons restart the player when the app is not visible.
+        mMediaSession.setMediaButtonReceiver(null);
+
+        // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player.
+        mStateBuilder = new PlaybackStateCompat.Builder()
+                .setActions(
+                        PlaybackStateCompat.ACTION_PLAY |
+                                PlaybackStateCompat.ACTION_PAUSE |
+                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS |
+                                PlaybackStateCompat.ACTION_PLAY_PAUSE);
+
+        mMediaSession.setPlaybackState(mStateBuilder.build());
+
+        // MySessionCallback has methods that handle callbacks from a media controller.
+        mMediaSession.setCallback(new MySessionCallback());
+
+        // Start the Media Session since the activity is active.
+        mMediaSession.setActive(true);
+
     }
 
     private void initializePlayer(Uri mediaUri) {
@@ -134,12 +186,33 @@ public class RecipeStepFragment extends Fragment {
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector, loadControl);
             mExoPlayerView.setPlayer(mExoPlayer);
 
-            // Prepare the MediaSource.
-            String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
-            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
-                    getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
-            mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+            if(mVideoUrl.isEmpty()) {
+                mExoPlayerView.setVisibility(View.GONE);
+                showThumbnail();
+            } else {
+                mExoPlayerView.setVisibility(View.VISIBLE);
+                // Set ExoPlayer.EventListener to this activity
+                mExoPlayer.addListener(this);
+
+                // Prepare the MediaSource.
+                String userAgent = Util.getUserAgent(getActivity(), "BakingApp");
+                MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+                        getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
+                mExoPlayer.prepare(mediaSource);
+                mExoPlayer.setPlayWhenReady(true);
+            }
+        }
+    }
+
+    public void showThumbnail() {
+        if(mThumbnailUrl.isEmpty()) {
+            mThumbnail.setImageResource(R.drawable.ic_launcher_foreground);
+        } else {
+            Picasso.with(getActivity())
+                    .load(mThumbnailUrl)
+                    .placeholder(R.drawable.ic_launcher_foreground)
+                    .error(R.drawable.ic_launcher_background)
+                    .into(mThumbnail);
         }
     }
 
@@ -159,6 +232,68 @@ public class RecipeStepFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         releasePlayer();
+        mMediaSession.setActive(false);
     }
 
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
+
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        ProgressBar pbVideoLoadingIndicator = mRootView.findViewById(R.id.pb_exo_loading_indicator);
+
+        if((playbackState == ExoPlayer.STATE_READY) && playWhenReady) {
+            Log.d(LOG_TAG, "onPlayerStateChanged: PLAYING");
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PLAYING,
+                     mExoPlayer.getCurrentPosition(), 1f);
+        } else if((playbackState == ExoPlayer.STATE_READY)) {
+            Log.d(LOG_TAG, "onPlayerStateChanged: PAUSED");
+            mStateBuilder.setState(PlaybackStateCompat.STATE_PAUSED,
+                    mExoPlayer.getCurrentPosition(), 1f);
+        }
+
+        mMediaSession.setPlaybackState(mStateBuilder.build());
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+
+    }
+
+    @Override
+    public void onPositionDiscontinuity() {
+
+    }
+
+    /**
+     * Media Session Callbacks, where all external clients control the player.
+     */
+    private class MySessionCallback extends MediaSessionCompat.Callback {
+        @Override
+        public void onPlay() {
+            mExoPlayer.setPlayWhenReady(true);
+        }
+
+        @Override
+        public void onPause() {
+            mExoPlayer.setPlayWhenReady(false);
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            mExoPlayer.seekTo(0);
+        }
+    }
 }
