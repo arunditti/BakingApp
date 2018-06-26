@@ -58,7 +58,7 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
         void onRecipeStepSelected(RecipeStep recipeClicked);
     }
 
-//    //Override onAttach to make sure that the conteiner activity has implemented the callback
+    //Override onAttach to make sure that the conteiner activity has implemented the callback
     @Override
     public void onAttach(Context context) {
 
