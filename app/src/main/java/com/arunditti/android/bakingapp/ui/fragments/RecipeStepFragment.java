@@ -76,6 +76,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
     private String mThumbnailUrl;
     private String mVideoUrl;
     private View mRootView;
+    long mVideoCurrentPosition;
 
 
     //Mandatory empty constructor
@@ -159,15 +160,14 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
         initializeMediaSession();
 
         // Initialize the player.
-        initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
+       // initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
 
         populateStepDetailUI(mClickedStepNumber);
 
 //        if(saveInstanceState != null ) {
 //            mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
-//            mClickedStepNumber = saveInstanceState.getInt(STEP_KEY);
-//            long mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY, 0);
-//            mExoPlayer.seekTo(mVideoCurrentPosition);
+//            mClickedStepNumber = saveInstanceState.getInt(STEP_KEY, 0);
+//            mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY);
 //        }
 
         return mRootView;
@@ -178,7 +178,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
 //        super.onSaveInstanceState(outState);
 //        outState.putParcelable(DETAILS_KEY, mCurrentRecipe);
 //        outState.putInt(STEP_KEY, mClickedStepNumber);
-//        outState.putLong(VIDEO_KEY, 0);
+//        outState.putLong(VIDEO_KEY, mExoPlayer.getCurrentPosition());
 //    }
 
     public void populateStepDetailUI(int mClickedStepNumber) {
@@ -213,6 +213,8 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(mRecipeName + " Step: " + mClickedStepNumber);
 
+        initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
+
         if (mVideoUrl.isEmpty()) {
             mExoPlayerView.setVisibility(View.GONE);
             showThumbnail();
@@ -222,6 +224,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
             // Initialize the player.
             initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
         }
+
     }
 
     /**

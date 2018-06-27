@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 //        FragmentManager fragmentManager = getSupportFragmentManager();
 //
 //        //Fragment transaction
-//        fragmentManager.beginTransaction().add(R.id.master_list_fragment, mainActivityFragment);
+//        fragmentManager.beginTransaction().add(R.id.master_list_fragment, mainActivityFragment).commit();
 
     }
 
