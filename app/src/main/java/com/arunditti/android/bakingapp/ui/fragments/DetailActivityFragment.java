@@ -55,7 +55,7 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
 
 //   // Interface that triggers a callback in the host activity
     public interface onRecipeStepClickListener {
-        void onRecipeStepSelected(RecipeStep recipeClicked);
+        void onRecipeStepSelected(int recipeClicked);
     }
 
     //Override onAttach to make sure that the conteiner activity has implemented the callback
@@ -161,7 +161,7 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     }
 
     @Override
-    public void onClick(RecipeStep recipeStepClicked) {
+    public void onClick(int recipeStepClicked) {
         mCallBack.onRecipeStepSelected(recipeStepClicked);
     }
 }

@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,14 +42,17 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
         if(findViewById(R.id.recipe_step_fragment) != null) {
 
             mTwoPane = true;
-            // Create a new RecipeStepFragment instance and display it using the FragmentManager
-            RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
 
-            //Use a FragmentManager and transaction to add the fragment to the screen
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            if(savedInstanceState == null) {
+                // Create a new RecipeStepFragment instance and display it using the FragmentManager
+                RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
 
-            //Fragment transaction
-            fragmentManager.beginTransaction().add(R.id.recipe_step_fragment, recipeStepFragment).commit();
+                //Use a FragmentManager and transaction to add the fragment to the screen
+                FragmentManager fragmentManager = getSupportFragmentManager();
+
+                //Fragment transaction
+                fragmentManager.beginTransaction().add(R.id.recipe_step_fragment, recipeStepFragment).commit();
+            }
 
         } else {
             mTwoPane = false;
@@ -57,11 +61,20 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
     }
 
     @Override
-    public void onRecipeStepSelected(RecipeStep recipeStepClicked) {
+    public void onRecipeStepSelected(int recipeStepClicked) {
 
         if(mTwoPane) {
             RecipeStepFragment recipeStepFragment = (RecipeStepFragment) getSupportFragmentManager().findFragmentById(R.id.recipe_step_fragment);
-            recipeStepFragment.populateStepDetailUI(recipeStepClicked.getId());
+            recipeStepFragment.populateStepDetailUI(recipeStepClicked);
+
+//            Bundle args = new Bundle();
+//            args.putInt("Arguments", recipeStepClicked.getId());
+//            Log.d(LOG_TAG, "Step clicked is:" + recipeStepClicked.getId());
+//
+//            RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
+//            recipeStepFragment.setArguments(args);
+//            FragmentManager fragmentManager = getSupportFragmentManager();
+//            fragmentManager.beginTransaction().replace(R.id.recipe_step_fragment, recipeStepFragment).commit();
 
         } else {
 

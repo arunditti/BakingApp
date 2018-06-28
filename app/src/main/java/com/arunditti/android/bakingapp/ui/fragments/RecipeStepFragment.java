@@ -46,6 +46,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.EventListener;
+import java.util.SimpleTimeZone;
 
 /**
  * Created by arunditti on 6/18/18.
@@ -58,6 +59,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
     private static final String DETAILS_KEY = "Recipe_parcel";
     private static final String STEP_KEY = "Recipe_step";
     private static final String VIDEO_KEY = "Video_key";
+    private static final String STEP_NUMBER_KEY = "step_number";
 
     private Recipe mCurrentRecipe;
     private String mRecipeName;
@@ -76,57 +78,53 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
     private String mThumbnailUrl;
     private String mVideoUrl;
     private View mRootView;
- //   long mVideoCurrentPosition;
+    long mVideoCurrentPosition;
 
 
     //Mandatory empty constructor
     public RecipeStepFragment() {
 
     }
-//
-//    @Override
-//    public void onActivityCreated(@Nullable Bundle saveInstanceState) {
-//
-//        super.onActivityCreated(saveInstanceState);
-//
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle saveInstanceState) {
+
+        super.onActivityCreated(saveInstanceState);
+
 //        if(saveInstanceState != null ) {
 //            mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
-//            mClickedStepNumber = saveInstanceState.getInt(STEP_KEY);
+//            mCurrentStep = saveInstanceState.getParcelable(STEP_KEY);
+//            mClickedStepNumber = saveInstanceState.getInt(STEP_NUMBER_KEY);
 //            long mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY);
 //            mExoPlayer.seekTo(mVideoCurrentPosition);
 //        }
-//    }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
 
-        final Intent intent = getActivity().getIntent();
-        mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
-        mCurrentStep = intent.getParcelableExtra(STEP_KEY);
+        if(saveInstanceState == null) {
+            Intent intent = getActivity().getIntent();
+                mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
+                //mCurrentStep = intent.getParcelableExtra(STEP_KEY);
+                mClickedStepNumber = intent.getIntExtra(STEP_KEY, 0);
+        } else {
+            mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
+           // mCurrentStep = saveInstanceState.getParcelable(STEP_KEY);
+            mClickedStepNumber = saveInstanceState.getInt(STEP_KEY);
+            mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY);
+        }
 
         mRecipeName = mCurrentRecipe.getRecipeName();
         mRecipeSteps = mCurrentRecipe.getRecipeSteps();
 
-        mClickedStepNumber = mCurrentStep.getId();
+       // mClickedStepNumber = mCurrentStep.getId();
         mCurrentStepClicked = mRecipeSteps.get(mClickedStepNumber);
 
         mExoPlayerView = mRootView.findViewById(R.id.exo_player_view_step_video);
         mExoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background));
-
-//        TextView StepDescription = mRootView.findViewById(R.id.tv_step_description);
-//        StepDescription.setText(mCurrentStepClicked.getDescription());
-//
-//        mThumbnail = mRootView.findViewById(R.id.iv_step_thumbnail);
-//        mThumbnailUrl = mCurrentStepClicked.getThumbnailUrl();
-//        Log.d(LOG_TAG, "***** Thumbnail url is: " + mThumbnailUrl);
-//
-//        mVideoUrl = mCurrentStepClicked.getVideoUrl();
-//        Log.d(LOG_TAG, "***** Video url is: " + mVideoUrl);
-
-//        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-//        actionBar.setTitle(mRecipeName + " Step: " + mClickedStepNumber);
 
         ProgressBar pbExoLoadingIndicator = mRootView.findViewById(R.id.pb_exo_loading_indicator);
 
@@ -160,22 +158,29 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
 
         populateStepDetailUI(mClickedStepNumber);
 
-//        if(saveInstanceState != null ) {
+//                if(saveInstanceState != null ) {
 //            mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
-//            mClickedStepNumber = saveInstanceState.getInt(STEP_KEY);
-//            mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY);
+//            mCurrentStep = saveInstanceState.getParcelable(STEP_KEY);
+//            mClickedStepNumber = saveInstanceState.getInt(STEP_NUMBER_KEY);
+//            long mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY);
+//            mExoPlayer.seekTo(mVideoCurrentPosition);
 //        }
 
         return mRootView;
     }
 
-//    @Override
-//    public void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putParcelable(DETAILS_KEY, mCurrentRecipe);
-//        outState.putInt(STEP_KEY, mClickedStepNumber);
-//        outState.putLong(VIDEO_KEY, mExoPlayer.getCurrentPosition());
-//    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(DETAILS_KEY, mCurrentRecipe);
+        //outState.putParcelable(STEP_KEY, mCurrentStep);
+        outState.putInt(STEP_KEY, mClickedStepNumber);
+        if(mExoPlayer != null) {
+            outState.putLong(VIDEO_KEY, mExoPlayer.getCurrentPosition());
+        } else {
+            outState.putLong(VIDEO_KEY, mVideoCurrentPosition);
+        }
+    }
 
     public void populateStepDetailUI(int mClickedStepNumber) {
 
@@ -209,7 +214,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(mRecipeName + " Step: " + mClickedStepNumber);
 
-         //Initialize the Media Session.
+        //Initialize the Media Session.
         initializeMediaSession();
 
         initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
@@ -276,6 +281,7 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
                     getActivity(), userAgent), new DefaultExtractorsFactory(), null, null);
             mExoPlayer.prepare(mediaSource);
             mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.seekTo( mVideoCurrentPosition);
         }
     }
 
@@ -285,8 +291,8 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
         } else {
             Picasso.with(getActivity())
                     .load(mThumbnailUrl)
-                    .placeholder(R.drawable.ic_launcher_foreground)
-                    .error(R.drawable.ic_launcher_background)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_foreground)
                     .into(mThumbnail);
         }
     }
@@ -371,4 +377,5 @@ public class RecipeStepFragment extends Fragment implements ExoPlayer.EventListe
             mExoPlayer.seekTo(0);
         }
     }
+
 }
