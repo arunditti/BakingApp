@@ -24,6 +24,7 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     private static final String DETAILS_KEY = "Recipe_parcel";
+    private static final String STEPS_LIST = "Recipe_steps";
     private static final String STEP_KEY ="Recipe_step";
     private Recipe mCurrentRecipe;
     private boolean mTwoPane;
@@ -79,8 +80,15 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
         } else {
 
             Intent intentToStartRecipeStepActivity = new Intent(this, RecipeStepActivity.class);
-            intentToStartRecipeStepActivity.putExtra(DETAILS_KEY, mCurrentRecipe);
-            intentToStartRecipeStepActivity.putExtra(STEP_KEY, recipeStepClicked);
+//            intentToStartRecipeStepActivity.putExtra(DETAILS_KEY, mCurrentRecipe);
+//            intentToStartRecipeStepActivity.putExtra(STEPS_LIST, mRecipeSteps);
+//            intentToStartRecipeStepActivity.putExtra(STEP_KEY, recipeStepClicked);
+            Bundle bundle = new Bundle();
+            //bundle.putParcelableArrayList(STEPS_LIST, mRecipeSteps);
+            bundle.putInt(STEP_KEY, recipeStepClicked);
+            bundle.putParcelable(DETAILS_KEY, mCurrentRecipe);
+
+            intentToStartRecipeStepActivity.putExtras(bundle);
             startActivity(intentToStartRecipeStepActivity);
         }
     }
