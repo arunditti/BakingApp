@@ -1,13 +1,7 @@
 package com.arunditti.android.bakingapp.ui.fragments;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.graphics.PorterDuff;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.ActionBar;
@@ -37,7 +31,6 @@ import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.Timeline;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -45,14 +38,11 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.SimpleTimeZone;
 
 /**
  * Created by arunditti on 6/18/18.
@@ -96,32 +86,16 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle saveInstanceState) {
-
-        super.onActivityCreated(saveInstanceState);
-
-//        if(saveInstanceState != null ) {
-//            mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
-//            mCurrentStep = saveInstanceState.getParcelable(STEP_KEY);
-//            mClickedStepNumber = saveInstanceState.getInt(STEP_NUMBER_KEY);
-//            long mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY);
-//            mExoPlayer.seekTo(mVideoCurrentPosition);
-//        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
 
-        if(saveInstanceState == null) {
+        if (saveInstanceState == null) {
             Intent intent = getActivity().getIntent();
-                mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
-                //mCurrentStep = intent.getParcelableExtra(STEP_KEY);
-                mClickedStepNumber = intent.getIntExtra(STEP_KEY, 0);
+            mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
+            mClickedStepNumber = intent.getIntExtra(STEP_KEY, 0);
         } else {
             mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
-           // mCurrentStep = saveInstanceState.getParcelable(STEP_KEY);
             mClickedStepNumber = saveInstanceState.getInt(STEP_KEY);
             mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY);
         }
@@ -129,7 +103,7 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         mRecipeName = mCurrentRecipe.getRecipeName();
         mRecipeSteps = mCurrentRecipe.getRecipeSteps();
 
-       // mClickedStepNumber = mCurrentStep.getId();
+        // mClickedStepNumber = mCurrentStep.getId();
         mCurrentStepClicked = mRecipeSteps.get(mClickedStepNumber);
 
         mExoPlayerView = mRootView.findViewById(R.id.exo_player_view_step_video);
@@ -141,10 +115,17 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         mButtonPreviousStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mClickedStepNumber == 0) {
+                    return;
+                }
                 mClickedStepNumber--;
                 Toast.makeText(getActivity(), "clicked step " + mClickedStepNumber, Toast.LENGTH_SHORT).show();
-                releasePlayer();
-                populateStepDetailUI(mClickedStepNumber);
+
+                if(mExoPlayer != null) {
+                    mExoPlayer.seekTo(playbackPosition);
+                    //releasePlayer();
+                    populateStepDetailUI(mClickedStepNumber);
+                }
             }
         });
 
@@ -152,13 +133,20 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         mButtonNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mClickedStepNumber == mRecipeSteps.size() -1) {
+                    return;
+                }
                 mClickedStepNumber++;
                 Toast.makeText(getActivity(), "clicked step " + mClickedStepNumber, Toast.LENGTH_SHORT).show();
-                releasePlayer();
-                populateStepDetailUI(mClickedStepNumber);
+
+                if(mExoPlayer != null) {
+                    mExoPlayer.seekTo(playbackPosition);
+                    //releasePlayer();
+                    populateStepDetailUI(mClickedStepNumber);
+                }
             }
         });
-//
+
 //        // Initialize the Media Session.
 //        initializeMediaSession();
 //
@@ -167,14 +155,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
 
         populateStepDetailUI(mClickedStepNumber);
 
-//                if(saveInstanceState != null ) {
-//            mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
-//            mCurrentStep = saveInstanceState.getParcelable(STEP_KEY);
-//            mClickedStepNumber = saveInstanceState.getInt(STEP_NUMBER_KEY);
-//            long mVideoCurrentPosition = saveInstanceState.getLong(VIDEO_KEY);
-//            mExoPlayer.seekTo(mVideoCurrentPosition);
-//        }
-
         return mRootView;
     }
 
@@ -182,9 +162,8 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(DETAILS_KEY, mCurrentRecipe);
-        //outState.putParcelable(STEP_KEY, mCurrentStep);
         outState.putInt(STEP_KEY, mClickedStepNumber);
-        if(mExoPlayer != null) {
+        if (mExoPlayer != null) {
             outState.putLong(VIDEO_KEY, mExoPlayer.getCurrentPosition());
         } else {
             outState.putLong(VIDEO_KEY, mVideoCurrentPosition);
@@ -231,6 +210,7 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
             mExoPlayerView.setVisibility(View.VISIBLE);
         }
 
+        releasePlayer();
         //Initialize the Media Session.
         initializeMediaSession();
         // Initialize the player.
@@ -319,12 +299,12 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
             Uri uri = Uri.parse(mCurrentStepClicked.getVideoUrl());
             MediaSource mediaSource = buildMediaSource(uri);
             mExoPlayer.prepare(mediaSource, true, false);
-            mExoPlayer.seekTo( mVideoCurrentPosition);
+            mExoPlayer.seekTo(mVideoCurrentPosition);
         }
     }
 
     private MediaSource buildMediaSource(Uri uri) {
-        return new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory("R.string.app_name"))
+        return new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory(getString(R.string.app_name)))
                 .createMediaSource(uri);
     }
 
@@ -394,7 +374,7 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     @Override
     public void onStart() {
         super.onStart();
-        if(Util.SDK_INT > 23) {
+        if (Util.SDK_INT > 23) {
             initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
         }
     }
@@ -402,7 +382,7 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     @Override
     public void onResume() {
         super.onResume();
-        if(Util.SDK_INT <= 23 || mExoPlayer == null) {
+        if (Util.SDK_INT <= 23 || mExoPlayer == null) {
             initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
         }
     }
@@ -410,7 +390,9 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     @Override
     public void onPause() {
         super.onPause();
-        if(Util.SDK_INT <= 23) {
+        if (Util.SDK_INT <= 23) {
+            mExoPlayer.setPlayWhenReady(false);
+            mExoPlayer.getPlaybackState();
             releasePlayer();
         }
     }
@@ -418,13 +400,14 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     @Override
     public void onStop() {
         super.onStop();
-        if(Util.SDK_INT > 23) {
+        if (Util.SDK_INT > 23) {
             releasePlayer();
         }
     }
 
-     //Release the player when the activity is destroyed.
 
+
+    //Release the player when the activity is destroyed.
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -432,12 +415,12 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         mMediaSession.setActive(false);
     }
 
-     //Release ExoPlayer.
+    //Release ExoPlayer.
     private void releasePlayer() {
-        if(mExoPlayer != null) {
-            playbackPosition = mExoPlayer.getContentPosition();
-            playWhenReady = mExoPlayer.getPlayWhenReady();
-            //mExoPlayer.stop();
+        if (mExoPlayer != null) {
+//            playbackPosition = mExoPlayer.getContentPosition();
+//            playWhenReady = mExoPlayer.getPlayWhenReady();
+            mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
         }

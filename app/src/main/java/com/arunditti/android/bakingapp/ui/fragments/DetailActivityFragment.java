@@ -80,8 +80,13 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
 
+        if(saveInstanceState == null) {
             Intent intent = getActivity().getIntent();
             mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
+        } else {
+            mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
+        }
+
 
         ImageView recipeImage = rootView.findViewById(R.id.iv_recipe_detail_image);
         TextView name = rootView.findViewById(R.id.tv_recipe_name_detail);
@@ -144,6 +149,13 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
         mLoadingIndicator = rootView.findViewById(R.id.pb_loading_indicator);
 
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(DETAILS_KEY, mCurrentRecipe);
+
     }
 
     private void showRecipeDataView() {
