@@ -39,6 +39,13 @@
             android:layout_below="@+id/iv_step_thumbnail"
             android:padding="8dp"/>
 
+        <View
+            android:layout_width="2dp"
+            android:layout_height="0dp"
+            android:id="@+id/v_center"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
+
         <Button
             android:id="@+id/button_previous_step"
             android:layout_width="wrap_content"

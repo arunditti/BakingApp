@@ -87,7 +87,6 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
             mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
         }
 
-
         ImageView recipeImage = rootView.findViewById(R.id.iv_recipe_detail_image);
         TextView name = rootView.findViewById(R.id.tv_recipe_name_detail);
         TextView servings = rootView.findViewById(R.id.tv_servings_detail);

@@ -103,7 +103,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         mRecipeName = mCurrentRecipe.getRecipeName();
         mRecipeSteps = mCurrentRecipe.getRecipeSteps();
 
-        // mClickedStepNumber = mCurrentStep.getId();
         mCurrentStepClicked = mRecipeSteps.get(mClickedStepNumber);
 
         mExoPlayerView = mRootView.findViewById(R.id.exo_player_view_step_video);
@@ -123,7 +122,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
 
                 if(mExoPlayer != null) {
                     mExoPlayer.seekTo(playbackPosition);
-                    //releasePlayer();
                     populateStepDetailUI(mClickedStepNumber);
                 }
             }
@@ -141,17 +139,13 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
 
                 if(mExoPlayer != null) {
                     mExoPlayer.seekTo(playbackPosition);
-                    //releasePlayer();
                     populateStepDetailUI(mClickedStepNumber);
                 }
             }
         });
 
-//        // Initialize the Media Session.
-//        initializeMediaSession();
-//
-//        // Initialize the player.
-//        initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
+        // Initialize the Media Session.
+        initializeMediaSession();
 
         populateStepDetailUI(mClickedStepNumber);
 
@@ -170,9 +164,11 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         }
     }
 
-    public void populateStepDetailUI(int mClickedStepNumber) {
+    public void populateStepDetailUI(int clickedStepNumber) {
 
-        if (mClickedStepNumber == 0) {
+        mClickedStepNumber = clickedStepNumber;
+
+        if (clickedStepNumber == 0) {
             mButtonPreviousStep.setEnabled(false);
             mButtonPreviousStep.setClickable(false);
         } else {
@@ -180,7 +176,7 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
             mButtonPreviousStep.setClickable(true);
         }
 
-        if (mClickedStepNumber == mRecipeSteps.size() - 1) {
+        if (clickedStepNumber == mRecipeSteps.size() - 1) {
             mButtonNextStep.setEnabled(false);
             mButtonNextStep.setClickable(false);
         } else {
@@ -188,7 +184,7 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
             mButtonNextStep.setClickable(true);
         }
 
-        mCurrentStepClicked = mRecipeSteps.get(mClickedStepNumber);
+        mCurrentStepClicked = mRecipeSteps.get(clickedStepNumber);
         TextView StepDescription = mRootView.findViewById(R.id.tv_step_description);
         StepDescription.setText(mCurrentStepClicked.getDescription());
 
@@ -200,7 +196,7 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         Log.d(LOG_TAG, "***** Video url is: " + mVideoUrl);
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setTitle(mRecipeName + " Step: " + mClickedStepNumber);
+        actionBar.setTitle(mRecipeName + " Step: " + clickedStepNumber);
 
         if (mVideoUrl.isEmpty()) {
             mExoPlayerView.setVisibility(View.GONE);
@@ -208,13 +204,13 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         } else {
             mThumbnail.setVisibility(View.GONE);
             mExoPlayerView.setVisibility(View.VISIBLE);
-        }
 
-        releasePlayer();
-        //Initialize the Media Session.
-        initializeMediaSession();
-        // Initialize the player.
-        initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
+            //Release the player
+            releasePlayer();
+
+            // Initialize the player.
+            initializePlayer(Uri.parse(mCurrentStepClicked.getVideoUrl()));
+        }
     }
 
     public void showThumbnail() {

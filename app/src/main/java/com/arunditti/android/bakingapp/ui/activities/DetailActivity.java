@@ -80,15 +80,14 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
         } else {
 
             Intent intentToStartRecipeStepActivity = new Intent(this, RecipeStepActivity.class);
-//            intentToStartRecipeStepActivity.putExtra(DETAILS_KEY, mCurrentRecipe);
-//            intentToStartRecipeStepActivity.putExtra(STEPS_LIST, mRecipeSteps);
-//            intentToStartRecipeStepActivity.putExtra(STEP_KEY, recipeStepClicked);
-            Bundle bundle = new Bundle();
-            //bundle.putParcelableArrayList(STEPS_LIST, mRecipeSteps);
-            bundle.putInt(STEP_KEY, recipeStepClicked);
-            bundle.putParcelable(DETAILS_KEY, mCurrentRecipe);
+            intentToStartRecipeStepActivity.putExtra(DETAILS_KEY, mCurrentRecipe);
+            intentToStartRecipeStepActivity.putExtra(STEPS_LIST, mRecipeSteps);
+            intentToStartRecipeStepActivity.putExtra(STEP_KEY, recipeStepClicked);
+//            Bundle bundle = new Bundle();
+//            bundle.putInt(STEP_KEY, recipeStepClicked);
+//            bundle.putParcelable(DETAILS_KEY, mCurrentRecipe);
 
-            intentToStartRecipeStepActivity.putExtras(bundle);
+           // intentToStartRecipeStepActivity.putExtras(bundle);
             startActivity(intentToStartRecipeStepActivity);
         }
     }

@@ -25,14 +25,16 @@ public class RecipeStepActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_step);
 
-        // Create a new RecipeStepFragment instance and display it using the FragmentManager
-        RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
+        if(savedInstanceState == null) {
+            //Create a new RecipeStepFragment instance and display it using the FragmentManager
+            RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
 
-        //Use a FragmentManager and transaction to add the fragment to the screen
-        FragmentManager fragmentManager = getSupportFragmentManager();
+            //Use a FragmentManager and transaction to add the fragment to the screen
+            FragmentManager fragmentManager = getSupportFragmentManager();
 
-        //Fragment transaction
-        fragmentManager.beginTransaction().add(R.id.recipe_step_fragment, recipeStepFragment).commit();
+            //Fragment transaction
+            fragmentManager.beginTransaction().add(R.id.recipe_step_fragment, recipeStepFragment).commit();
+        }
 
         Intent intentThatStartedThisActivity = getIntent();
         mCurrentRecipe = intentThatStartedThisActivity.getParcelableExtra(DETAILS_KEY);

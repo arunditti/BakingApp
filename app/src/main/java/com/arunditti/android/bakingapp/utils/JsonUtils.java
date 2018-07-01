@@ -60,6 +60,7 @@ public class JsonUtils {
             String recipeName = recipe.optString(JSON_RECIPE_NAME);
             String recipeServings = recipe.optString(JSON_RECIPE_SERVINGS);
             String recipeImage = recipe.optString(JSON_RECIPE_IMAGE);
+            String recipeThumbnail = recipe.optString(JSON_RECIPE_THUMBNAIL);
 
             JSONArray recipeIngredientsArray = recipe.getJSONArray(JSON_RECIPE_INGREDIENTS);
             ArrayList<RecipeIngredient> recipeIngredients = new ArrayList<RecipeIngredient>();
@@ -87,7 +88,7 @@ public class JsonUtils {
                 recipeSteps.add(new RecipeStep(stepsId, shortDescription, description, videoUrl, thumbnail));
             }
 
-            recipesList.add(new Recipe(recipeId, recipeName, recipeIngredients, recipeSteps, recipeImage, recipeServings, recipeImage));
+            recipesList.add(new Recipe(recipeId, recipeName, recipeIngredients, recipeSteps, recipeThumbnail, recipeServings, recipeImage));
 
         }
         return recipesList;
