@@ -1,8 +1,11 @@
 package com.arunditti.android.bakingapp.ui.fragments;
 
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,12 +21,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.arunditti.android.bakingapp.BakingAppWidgetProvider;
 import com.arunditti.android.bakingapp.R;
 import com.arunditti.android.bakingapp.model.Recipe;
 import com.arunditti.android.bakingapp.model.RecipeIngredient;
 import com.arunditti.android.bakingapp.model.RecipeStep;
 import com.arunditti.android.bakingapp.ui.adapters.RecipeStepsAdapter;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -36,6 +42,7 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
 
     private static final String LOG_TAG = DetailActivityFragment.class.getSimpleName();
 
+    private static final String SHARED_PREFERENCE_KEY = "shared_preference_key";
     private static final String DETAILS_KEY = "Recipe_parcel";
     private Recipe mCurrentRecipe;
     private RecipeStepsAdapter mStepsAdapter;
@@ -43,6 +50,8 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
 
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
+
+    private ArrayList<RecipeIngredient> mRecipeIngredients = new ArrayList<RecipeIngredient>();
 
     private ArrayList<RecipeStep> mRecipeSteps = new ArrayList<RecipeStep>();
 
@@ -83,6 +92,25 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
         if(saveInstanceState == null) {
             Intent intent = getActivity().getIntent();
             mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
+
+            //Save recipe ingredients to SharedPreferences
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(getString(R.string.recipe_name_key), mCurrentRecipe.getRecipeName());
+            editor.putString(getString(R.string.recipe_thumbnail_key), mCurrentRecipe.getRecipeThumbnailUrl());
+            editor.commit();
+
+            Gson gson = new Gson();
+            String json = gson.toJson(mCurrentRecipe.getRecipeIngredients());
+            editor.putString(SHARED_PREFERENCE_KEY, json);
+            editor.apply();
+
+            Intent widgetIntent = new Intent(getActivity(), BakingAppWidgetProvider.class);
+            widgetIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+            getContext().sendBroadcast(widgetIntent);
+
+            Toast.makeText(getActivity(), "Widget is added", Toast.LENGTH_SHORT).show();
+
         } else {
             mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
         }
@@ -154,7 +182,6 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(DETAILS_KEY, mCurrentRecipe);
-
     }
 
     private void showRecipeDataView() {
@@ -175,4 +202,5 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     public void onClick(int recipeStepClicked) {
         mCallBack.onRecipeStepSelected(recipeStepClicked);
     }
+
 }

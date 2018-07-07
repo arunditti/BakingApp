@@ -7,70 +7,70 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <ImageView
-    android:id="@+id/iv_recipe_detail_image"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:scaleType="centerCrop" />
+        <ImageView
+            android:id="@+id/iv_recipe_detail_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop" />
 
-    <TextView
-    android:id="@+id/tv_recipe_name_detail"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_toRightOf="@+id/iv_recipe_detail_image"/>
+        <TextView
+            android:id="@+id/tv_recipe_name_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_recipe_detail_image" />
 
-    <TextView
-    android:id="@+id/tv_servings_detail"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_below="@+id/tv_recipe_name_detail"
-        android:layout_toRightOf="@+id/iv_recipe_detail_image"/>
+        <TextView
+            android:id="@+id/tv_servings_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_recipe_name_detail"
+            android:layout_toRightOf="@+id/iv_recipe_detail_image" />
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cv_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_recipe_detail_image"
             android:layout_gravity="center"
-            card_view:cardElevation="3dp"
             card_view:cardCornerRadius="3dp"
-            card_view:cardUseCompatPadding="true"
-            android:layout_below="@+id/iv_recipe_detail_image">
+            card_view:cardElevation="3dp"
+            card_view:cardUseCompatPadding="true">
 
 
-        <TextView
-    android:id="@+id/tv_ingredients_list_detail"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tv_ingredients_list_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </android.support.v7.widget.CardView>
 
-    <!--RecyclerView for holding list of recipes-->
-    <android.support.v7.widget.RecyclerView
-    android:id="@+id/rv_recipe_steps"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:scrollbars="vertical"
-        android:layout_below="@+id/cv_list"></android.support.v7.widget.RecyclerView>
+        <!--RecyclerView for holding list of recipes-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_recipe_steps"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/cv_list"
+            android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
 
-    <TextView
-    android:id="@+id/tv_error_message_display"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:text="@string/error_message"
-    android:textSize="@dimen/text_size"
-    android:visibility="invisible" />
+        <TextView
+            android:id="@+id/tv_error_message_display"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="@string/error_message"
+            android:textSize="@dimen/text_size"
+            android:visibility="invisible" />
 
-    <ProgressBar
-    android:id="@+id/pb_loading_indicator"
-    android:layout_width="42dp"
-    android:layout_height="42dp"
-    android:layout_gravity="center"
-    android:visibility="invisible" />
+        <ProgressBar
+            android:id="@+id/pb_loading_indicator"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 
