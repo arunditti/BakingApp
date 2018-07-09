@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
+import com.arunditti.android.bakingapp.R;
 import com.arunditti.android.bakingapp.model.Recipe;
 import com.arunditti.android.bakingapp.model.RecipeIngredient;
 import com.arunditti.android.bakingapp.model.RecipeStep;

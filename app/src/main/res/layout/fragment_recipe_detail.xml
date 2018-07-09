@@ -14,20 +14,24 @@
             android:id="@+id/iv_recipe_detail_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:layout_margin="@dimen/image_margin"/>
 
         <TextView
             android:id="@+id/tv_recipe_name_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/iv_recipe_detail_image" />
+            android:layout_toRightOf="@+id/iv_recipe_detail_image"
+            android:layout_marginLeft="@dimen/margin_16"
+            android:layout_marginTop="@dimen/margin_16"/>
 
         <TextView
             android:id="@+id/tv_servings_detail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_recipe_name_detail"
-            android:layout_toRightOf="@+id/iv_recipe_detail_image" />
+            android:layout_toRightOf="@+id/iv_recipe_detail_image"
+            android:layout_marginLeft="@dimen/margin_16"/>
 
         <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:card_view="http://schemas.android.com/apk/res-auto"

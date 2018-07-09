@@ -50,6 +50,7 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
 
     private TextView mErrorMessageDisplay;
     private ProgressBar mLoadingIndicator;
+    private int recipePicture;
 
     private ArrayList<RecipeIngredient> mRecipeIngredients = new ArrayList<RecipeIngredient>();
 
@@ -143,8 +144,31 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
             Log.d(LOG_TAG, "*****Ingredient list size is: " +ingredientsList.size());
         }
 
+        switch(mCurrentRecipe.getRecipeName()) {
+            case "Nutella Pie":
+                recipePicture = R.drawable.nutella_pie;
+                break;
+            case "Brownies":
+                recipePicture = R.drawable.brownies;
+                break;
+            case "Yellow Cake":
+                recipePicture = R.drawable.yellow_cake;
+                break;
+            case "Cheesecake":
+                recipePicture = R.drawable.cheesecake;
+                break;
+            default:
+                recipePicture = R.drawable.ic_launcher_foreground;
+        }
+
         if(mCurrentRecipe.getRecipeImage().isEmpty()) {
-            recipeImage.setImageResource(R.drawable.ic_launcher_foreground);
+            //recipeImage.setImageResource(R.drawable.ic_launcher_foreground);
+            Picasso.with(getActivity())
+                    .load(recipePicture)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_foreground)
+                    .fit()
+                    .into(recipeImage);
         } else {
             Picasso.with(getActivity())
                     .load(mCurrentRecipe.getRecipeImage())

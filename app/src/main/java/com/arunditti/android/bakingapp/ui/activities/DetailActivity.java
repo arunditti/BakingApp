@@ -28,7 +28,6 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
     private static final String STEP_KEY ="Recipe_step";
     private Recipe mCurrentRecipe;
     private boolean mTwoPane;
-    private int mClickedStepNumber;
     private ArrayList<RecipeStep> mRecipeSteps = new ArrayList<RecipeStep>();
 
 

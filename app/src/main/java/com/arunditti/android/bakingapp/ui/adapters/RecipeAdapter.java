@@ -53,9 +53,33 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
     @Override
     public void onBindViewHolder(@NonNull RecipeAdapterViewHolder holder, int position) {
         holder.recipeName.setText(mRecipe.get(position).recipeName);
+        int recipePicture;
+
+        switch(mRecipe.get(position).recipeName) {
+            case "Nutella Pie":
+                recipePicture = R.drawable.nutella_pie;
+                break;
+            case "Brownies":
+                recipePicture = R.drawable.brownies;
+                break;
+            case "Yellow Cake":
+                recipePicture = R.drawable.yellow_cake;
+                break;
+            case "Cheesecake":
+                recipePicture = R.drawable.cheesecake;
+                break;
+                default:
+                    recipePicture = R.drawable.ic_launcher_foreground;
+        }
 
         if(mRecipe.get(position).recipeImage.isEmpty()) {
-            holder.recipeImage.setImageResource(R.drawable.ic_launcher_foreground);
+            //holder.recipeImage.setImageResource(R.drawable.ic_launcher_foreground);
+            Picasso.with(mContext)
+                    .load(recipePicture)
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .error(R.drawable.ic_launcher_foreground)
+                    .fit()
+                    .into(holder.recipeImage);
         } else {
             Picasso.with(mContext)
                     .load(mRecipe.get(position).recipeImage)

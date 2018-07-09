@@ -5,9 +5,12 @@
     android:id="@+id/cv_list"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/card_layout_margin"
+    android:layout_marginRight="@dimen/card_layout_margin"
+    android:layout_marginTop="@dimen/card_layout_margin"
     android:layout_gravity="center"
-    card_view:cardElevation="3dp"
-    card_view:cardCornerRadius="3dp"
+    card_view:cardElevation="@dimen/card_elevation"
+    card_view:cardCornerRadius="@dimen/card_corner_radius"
     card_view:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -18,7 +21,7 @@
         <ImageView
             android:id="@+id/recipe_image"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="@dimen/card_image_height"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_background"/>
 
@@ -26,7 +29,8 @@
             android:id="@+id/recipe_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"/>
+            android:textAlignment="center"
+            android:textSize="@dimen/name_text_size"/>
 
     </LinearLayout>
 
