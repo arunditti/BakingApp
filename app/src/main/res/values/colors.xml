@@ -6,11 +6,11 @@
 <!--</resources>-->
 <resources>
     <color name="colorPrimary">#4e342e</color>
-    <color name="colorSecondary">#6D4C41</color>
+    <color name="colorSecondary">#8D6E63</color>
     <color name="colorPrimaryDark">#3e2723</color>
-    <color name="colorAccent">#2e7d32</color>
+    <color name="colorAccent">#bdbdbd</color>
 
-    <color name="blue">#00abea</color>
+    <color name="black">#000000</color>
     <color name="white">#ffffff</color>
-    <color name="screenBackgroundGrey">#f0f0f0</color>
+    <color name="screenBackgroundGrey">#EFEBE9</color>
 </resources>

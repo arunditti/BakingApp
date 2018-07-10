@@ -55,8 +55,8 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
         StringBuffer stringBuffer = new StringBuffer();
 
-        stringBuffer.append("Step: ")
-                .append(recipeStepNumber + " ")
+        stringBuffer.append("Step ")
+                .append(recipeStepNumber + ": ")
                 .append(recipeDescription);
         String steps = stringBuffer.toString();
         holder.recipeShortDescription.setText(steps);

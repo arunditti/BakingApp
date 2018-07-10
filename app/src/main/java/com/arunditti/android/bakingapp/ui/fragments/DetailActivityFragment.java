@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -89,10 +90,12 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
+        ScrollView detailScrollView = rootView.findViewById(R.id.detail_scrollView);
 
         if(saveInstanceState == null) {
             Intent intent = getActivity().getIntent();
             mCurrentRecipe = intent.getParcelableExtra(DETAILS_KEY);
+            detailScrollView.smoothScrollTo(0, 0);
 
             //Save recipe ingredients to SharedPreferences
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -131,7 +134,7 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
         } else {
             ArrayList<RecipeIngredient> ingredientsList = mCurrentRecipe.getRecipeIngredients();
             for (int i = 0; i < ingredientsList.size(); i++) {
-                stringBuffer.append(" ")
+                stringBuffer.append(" \u2022 ")
                         .append(ingredientsList.get(i).getIngredientName() + "  ")
                         .append(ingredientsList.get(i).getQuantity() + " ")
                         .append(ingredientsList.get(i).getMeasure().toLowerCase() + "\n");
@@ -158,21 +161,21 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
                 recipePicture = R.drawable.cheesecake;
                 break;
             default:
-                recipePicture = R.drawable.ic_launcher_foreground;
+                recipePicture = R.drawable.placeholder_image;
         }
 
         if(mCurrentRecipe.getRecipeImage().isEmpty()) {
             //recipeImage.setImageResource(R.drawable.ic_launcher_foreground);
             Picasso.with(getActivity())
                     .load(recipePicture)
-                    .placeholder(R.drawable.ic_launcher_background)
+                    .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.ic_launcher_foreground)
                     .fit()
                     .into(recipeImage);
         } else {
             Picasso.with(getActivity())
                     .load(mCurrentRecipe.getRecipeImage())
-                    .placeholder(R.drawable.ic_launcher_background)
+                    .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.ic_launcher_foreground)
                     .fit()
                     .into(recipeImage);
@@ -206,20 +209,6 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(DETAILS_KEY, mCurrentRecipe);
-    }
-
-    private void showRecipeDataView() {
-        //First make sure error is invisible
-        mErrorMessageDisplay.setVisibility(View.INVISIBLE);
-        //Then make sure recipe data is visible
-        mRecyclerView.setVisibility(View.VISIBLE);
-    }
-
-    private void showErrorMessage() {
-        //First hide currently visible data
-        mRecyclerView.setVisibility(View.INVISIBLE);
-        //Then show the error
-        mErrorMessageDisplay.setVisibility(View.VISIBLE);
     }
 
     @Override

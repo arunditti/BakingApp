@@ -77,8 +77,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     private String mVideoUrl;
     private View mRootView;
     long mVideoCurrentPosition;
-    private boolean mTwoPane;
-
 
     //Mandatory empty constructor
     public RecipeStepFragment() {
@@ -114,16 +112,14 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         mButtonPreviousStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mClickedStepNumber == 0) {
+                if (mClickedStepNumber == 0) {
                     return;
                 }
                 mClickedStepNumber--;
                 Toast.makeText(getActivity(), "clicked step " + mClickedStepNumber, Toast.LENGTH_SHORT).show();
+                mVideoCurrentPosition = playbackPosition;
+                populateStepDetailUI(mClickedStepNumber);
 
-                if(mExoPlayer != null) {
-                    mExoPlayer.seekTo(playbackPosition);
-                    populateStepDetailUI(mClickedStepNumber);
-                }
             }
         });
 
@@ -131,16 +127,14 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         mButtonNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mClickedStepNumber == mRecipeSteps.size() -1) {
+                if (mClickedStepNumber == mRecipeSteps.size() - 1) {
                     return;
                 }
                 mClickedStepNumber++;
                 Toast.makeText(getActivity(), "clicked step " + mClickedStepNumber, Toast.LENGTH_SHORT).show();
+                mVideoCurrentPosition = playbackPosition;
+                populateStepDetailUI(mClickedStepNumber);
 
-                if(mExoPlayer != null) {
-                    mExoPlayer.seekTo(playbackPosition);
-                    populateStepDetailUI(mClickedStepNumber);
-                }
             }
         });
 
@@ -196,11 +190,13 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         Log.d(LOG_TAG, "***** Video url is: " + mVideoUrl);
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-        actionBar.setTitle(mRecipeName + " Step: " + clickedStepNumber);
+        actionBar.setTitle(mRecipeName + " Step " + clickedStepNumber);
 
         if (mVideoUrl.isEmpty()) {
             mExoPlayerView.setVisibility(View.GONE);
+            releasePlayer();
             showThumbnail();
+            mThumbnail.setVisibility(View.VISIBLE);
         } else {
             mThumbnail.setVisibility(View.GONE);
             mExoPlayerView.setVisibility(View.VISIBLE);
@@ -215,20 +211,17 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
 
     public void showThumbnail() {
         if (mThumbnailUrl.isEmpty()) {
-            mThumbnail.setImageResource(R.drawable.ic_launcher_foreground);
+            mThumbnail.setImageResource(R.drawable.placeholder_image);
         } else {
             Picasso.with(getActivity())
                     .load(mThumbnailUrl)
-                    .placeholder(R.drawable.ic_launcher_background)
+                    .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.ic_launcher_foreground)
                     .into(mThumbnail);
         }
     }
 
-    /**
-     * Initializes the Media Session to be enabled with media buttons, transport controls, callbacks
-     * and media controller.
-     */
+    //Initializes the Media Session to be enabled with media buttons, transport controls, callbacks and media controller.
     private void initializeMediaSession() {
 
         // Create a MediaSessionCompat.
@@ -260,7 +253,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     }
 
     //Media Session Callbacks, where all external clients control the player.
-
     private class MySessionCallback extends MediaSessionCompat.Callback {
         @Override
         public void onPlay() {
@@ -387,8 +379,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     public void onPause() {
         super.onPause();
         if (Util.SDK_INT <= 23) {
-            mExoPlayer.setPlayWhenReady(false);
-            mExoPlayer.getPlaybackState();
             releasePlayer();
         }
     }
@@ -401,8 +391,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         }
     }
 
-
-
     //Release the player when the activity is destroyed.
     @Override
     public void onDestroy() {
@@ -414,8 +402,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     //Release ExoPlayer.
     private void releasePlayer() {
         if (mExoPlayer != null) {
-//            playbackPosition = mExoPlayer.getContentPosition();
-//            playWhenReady = mExoPlayer.getPlayWhenReady();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
