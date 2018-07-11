@@ -14,6 +14,9 @@ import com.arunditti.android.bakingapp.model.RecipeStep;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by arunditti on 6/18/18.
  */
@@ -60,8 +63,6 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
                 .append(recipeDescription);
         String steps = stringBuffer.toString();
         holder.recipeShortDescription.setText(steps);
-
-        //holder.recipeShortDescription.setText(mRecipeStep.get(position).getShortDescription());
     }
 
     @Override
@@ -71,21 +72,19 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
 
     public class RecipeStepsAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        CardView cardView;
-        TextView recipeShortDescription;
+        @BindView(R.id.cv_steps) CardView cardView;
+        @BindView(R.id.recipe_short_Description) TextView recipeShortDescription;
 
         public RecipeStepsAdapterViewHolder(View itemView) {
             super(itemView);
-            cardView = (CardView) itemView.findViewById(R.id.cv_steps);
-            recipeShortDescription = itemView.findViewById(R.id.recipe_short_Description);
 
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
-            RecipeStep recipeStepClicked = mRecipeStep.get(clickedPosition);
             mClickHandler.onClick(clickedPosition);
         }
     }
@@ -94,5 +93,4 @@ public class RecipeStepsAdapter extends RecyclerView.Adapter<RecipeStepsAdapter.
         this.mRecipeStep = recipeStep;
         this.notifyDataSetChanged();
     }
-
 }

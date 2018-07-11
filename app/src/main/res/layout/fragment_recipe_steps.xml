@@ -19,14 +19,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true" />
 
-        <ProgressBar
-            android:id="@+id/pb_exo_loading_indicator"
-            android:layout_height="42dp"
-            android:layout_width="42dp"
-            android:layout_gravity="center"
-            android:visibility="invisible" />
-
-
         <ImageView
             android:id="@+id/iv_step_thumbnail"
             android:layout_width="match_parent"

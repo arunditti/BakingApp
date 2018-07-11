@@ -1,10 +1,8 @@
 package com.arunditti.android.bakingapp.ui.fragments;
 
-import android.app.Activity;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,19 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arunditti.android.bakingapp.R;
 import com.arunditti.android.bakingapp.model.Recipe;
-import com.arunditti.android.bakingapp.ui.activities.DetailActivity;
 import com.arunditti.android.bakingapp.ui.adapters.RecipeAdapter;
 import com.arunditti.android.bakingapp.ui.loaders.RecipeListLoader;
-import com.arunditti.android.bakingapp.utils.JsonUtils;
-import com.arunditti.android.bakingapp.utils.NetworkUtils;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by arunditti on 6/12/18.
@@ -45,9 +40,10 @@ public class MainActivityFragment extends Fragment implements RecipeAdapter.Reci
     int RECIPE_LOADER_ID = 100;
 
     private RecipeAdapter mAdapter;
-    private RecyclerView mRecyclerView;
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
+
+    @BindView(R.id.rv_recipe_list) RecyclerView mRecyclerView;
+    @BindView(R.id.tv_error_message_display) TextView mErrorMessageDisplay;
+    @BindView(R.id.pb_loading_indicator) ProgressBar mLoadingIndicator;
 
     //Interface that triggers a callback in the host activity
     onRecipeClickListener mCallBack;
@@ -80,7 +76,7 @@ public class MainActivityFragment extends Fragment implements RecipeAdapter.Reci
 
         //Inflate MainActivityFragment layout
         View rootView = inflater.inflate(R.layout.fragment_recipe_list, container, false);
-        mRecyclerView = rootView.findViewById(R.id.rv_recipe_list);
+        ButterKnife.bind(this, rootView);
 
         //Size in pixels
         int imageWidth = 500;
@@ -94,10 +90,6 @@ public class MainActivityFragment extends Fragment implements RecipeAdapter.Reci
 
         //Link the adapter to the RecyclerView
         mRecyclerView.setAdapter(mAdapter);
-
-         /* This TextView is used to display errors and will be hidden if there are no errors */
-        mErrorMessageDisplay = rootView.findViewById(R.id.tv_error_message_display);
-        mLoadingIndicator = rootView.findViewById(R.id.pb_loading_indicator);
 
         //Ensure a loader is initialized and active. If the loader doesn't already exist, one is created and starts the loader. Othe
         getLoaderManager().initLoader(RECIPE_LOADER_ID, null, mRecipeListLoader);

@@ -24,7 +24,7 @@ public class RecipeListLoader extends AsyncTaskLoader<ArrayList<Recipe>> {
         super(context);
     }
 
-        ArrayList<Recipe> mRecipeData = null;
+        private ArrayList<Recipe> mRecipeData = null;
 
         @Override
         protected void onStartLoading() {
@@ -43,8 +43,7 @@ public class RecipeListLoader extends AsyncTaskLoader<ArrayList<Recipe>> {
 
             try {
                 String jsonRecipeResponse = NetworkUtils.getResponseFromHttpUrl(recipeUrl);
-                ArrayList<Recipe> simpleJsonRecipeData = JsonUtils.getRecipesInformation(getContext(), jsonRecipeResponse);
-                return simpleJsonRecipeData;
+                return JsonUtils.getRecipesInformation(getContext(), jsonRecipeResponse);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;

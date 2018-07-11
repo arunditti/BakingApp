@@ -44,6 +44,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by arunditti on 6/18/18.
  */
@@ -55,28 +58,28 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     private static final String DETAILS_KEY = "Recipe_parcel";
     private static final String STEP_KEY = "Recipe_step";
     private static final String VIDEO_KEY = "Video_key";
-    private static final String STEP_NUMBER_KEY = "step_number";
 
     private Recipe mCurrentRecipe;
     private String mRecipeName;
-    private RecipeStep mCurrentStep;
     private RecipeStep mCurrentStepClicked;
     private ArrayList<RecipeStep> mRecipeSteps = new ArrayList<RecipeStep>();
     private int mClickedStepNumber;
-    private Button mButtonPreviousStep;
-    private Button mButtonNextStep;
-    private ImageView mThumbnail;
     private ExoPlayer mExoPlayer;
-    private PlayerView mExoPlayerView;
+
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
     private long playbackPosition = 0;
-    private boolean playWhenReady;
 
     private String mThumbnailUrl;
     private String mVideoUrl;
     private View mRootView;
     long mVideoCurrentPosition;
+
+    @BindView(R.id.exo_player_view_step_video) PlayerView mExoPlayerView;
+    @BindView(R.id.button_previous_step) Button mButtonPreviousStep;
+    @BindView(R.id.button_next_step) Button mButtonNextStep;
+    @BindView(R.id.iv_step_thumbnail) ImageView mThumbnail;
+    @BindView(R.id.tv_step_description) TextView StepDescription;
 
     //Mandatory empty constructor
     public RecipeStepFragment() {
@@ -87,6 +90,7 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_recipe_steps, container, false);
+        ButterKnife.bind(this, mRootView);
 
         if (saveInstanceState == null) {
             Intent intent = getActivity().getIntent();
@@ -103,12 +107,8 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
 
         mCurrentStepClicked = mRecipeSteps.get(mClickedStepNumber);
 
-        mExoPlayerView = mRootView.findViewById(R.id.exo_player_view_step_video);
         mExoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_background));
 
-        ProgressBar pbExoLoadingIndicator = mRootView.findViewById(R.id.pb_exo_loading_indicator);
-
-        mButtonPreviousStep = mRootView.findViewById(R.id.button_previous_step);
         mButtonPreviousStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,7 +123,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
             }
         });
 
-        mButtonNextStep = mRootView.findViewById(R.id.button_next_step);
         mButtonNextStep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -179,10 +178,8 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
         }
 
         mCurrentStepClicked = mRecipeSteps.get(clickedStepNumber);
-        TextView StepDescription = mRootView.findViewById(R.id.tv_step_description);
         StepDescription.setText(mCurrentStepClicked.getDescription());
 
-        mThumbnail = mRootView.findViewById(R.id.iv_step_thumbnail);
         mThumbnailUrl = mCurrentStepClicked.getThumbnailUrl();
         Log.d(LOG_TAG, "***** Thumbnail url is: " + mThumbnailUrl);
 
@@ -313,8 +310,6 @@ public class RecipeStepFragment extends Fragment implements Player.EventListener
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
-        ProgressBar pbVideoLoadingIndicator = mRootView.findViewById(R.id.pb_exo_loading_indicator);
 
         if ((playbackState == Player.STATE_READY) && playWhenReady) {
             Log.d(LOG_TAG, "onPlayerStateChanged: PLAYING");

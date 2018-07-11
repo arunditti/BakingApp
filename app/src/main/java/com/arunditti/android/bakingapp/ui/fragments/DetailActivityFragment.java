@@ -16,10 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +32,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by arunditti on 6/14/18.
  */
@@ -47,19 +47,17 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     private static final String DETAILS_KEY = "Recipe_parcel";
     private Recipe mCurrentRecipe;
     private RecipeStepsAdapter mStepsAdapter;
-    private RecyclerView mRecyclerView;
 
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
     private int recipePicture;
 
-    private ArrayList<RecipeIngredient> mRecipeIngredients = new ArrayList<RecipeIngredient>();
+    @BindView(R.id.iv_recipe_detail_image) ImageView recipeImage;
+    @BindView(R.id.tv_recipe_name_detail) TextView name;
+    @BindView(R.id.tv_servings_detail) TextView servings;
+    @BindView(R.id.tv_ingredients_list_detail) TextView ingredients;
+    @BindView(R.id.rv_recipe_steps) RecyclerView mRecyclerView;
+    @BindView(R.id.detail_scrollView) ScrollView detailScrollView;
 
     private ArrayList<RecipeStep> mRecipeSteps = new ArrayList<RecipeStep>();
-
-
-//    //Declare an ActivityDetailBinding field called mDetailBinding
-//    private FragmentRecipeDetailBinding mDetailBinding;
 
     //Interface that triggers a callback in the host activity
     onRecipeStepClickListener mCallBack;
@@ -90,7 +88,7 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
-        ScrollView detailScrollView = rootView.findViewById(R.id.detail_scrollView);
+        ButterKnife.bind(this, rootView);
 
         if(saveInstanceState == null) {
             Intent intent = getActivity().getIntent();
@@ -118,11 +116,6 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
         } else {
             mCurrentRecipe = saveInstanceState.getParcelable(DETAILS_KEY);
         }
-
-        ImageView recipeImage = rootView.findViewById(R.id.iv_recipe_detail_image);
-        TextView name = rootView.findViewById(R.id.tv_recipe_name_detail);
-        TextView servings = rootView.findViewById(R.id.tv_servings_detail);
-        TextView ingredients = rootView.findViewById(R.id.tv_ingredients_list_detail);
 
         name.setText(mCurrentRecipe.getRecipeName());
         servings.setText(mCurrentRecipe.getServings());
@@ -197,10 +190,6 @@ public class DetailActivityFragment extends Fragment implements RecipeStepsAdapt
         //Action to display recipe name
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         actionBar.setTitle(mCurrentRecipe.recipeName);
-
-         /* This TextView is used to display errors and will be hidden if there are no errors */
-        mErrorMessageDisplay = rootView.findViewById(R.id.tv_error_message_display);
-        mLoadingIndicator = rootView.findViewById(R.id.pb_loading_indicator);
 
         return rootView;
     }

@@ -67,26 +67,13 @@ public class DetailActivity extends AppCompatActivity implements DetailActivityF
             RecipeStepFragment recipeStepFragment = (RecipeStepFragment) getSupportFragmentManager().findFragmentById(R.id.recipe_step_fragment);
             recipeStepFragment.populateStepDetailUI(recipeStepClicked);
 
-//            Bundle args = new Bundle();
-//            args.putInt("Arguments", recipeStepClicked.getId());
-//            Log.d(LOG_TAG, "Step clicked is:" + recipeStepClicked.getId());
-//
-//            RecipeStepFragment recipeStepFragment = new RecipeStepFragment();
-//            recipeStepFragment.setArguments(args);
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.recipe_step_fragment, recipeStepFragment).commit();
-
         } else {
 
             Intent intentToStartRecipeStepActivity = new Intent(this, RecipeStepActivity.class);
             intentToStartRecipeStepActivity.putExtra(DETAILS_KEY, mCurrentRecipe);
             intentToStartRecipeStepActivity.putExtra(STEPS_LIST, mRecipeSteps);
             intentToStartRecipeStepActivity.putExtra(STEP_KEY, recipeStepClicked);
-//            Bundle bundle = new Bundle();
-//            bundle.putInt(STEP_KEY, recipeStepClicked);
-//            bundle.putParcelable(DETAILS_KEY, mCurrentRecipe);
 
-           // intentToStartRecipeStepActivity.putExtras(bundle);
             startActivity(intentToStartRecipeStepActivity);
         }
     }

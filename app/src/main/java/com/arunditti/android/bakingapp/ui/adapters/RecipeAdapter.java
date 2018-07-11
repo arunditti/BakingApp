@@ -18,6 +18,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by arunditti on 6/12/18.
  */
@@ -55,6 +58,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
         holder.recipeName.setText(mRecipe.get(position).recipeName);
         int recipePicture;
 
+        //Downloaded these pics from pixabay.com
         switch(mRecipe.get(position).recipeName) {
             case "Nutella Pie":
                 recipePicture = R.drawable.nutella_pie;
@@ -73,17 +77,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
         }
 
         if(mRecipe.get(position).recipeImage.isEmpty()) {
-            //holder.recipeImage.setImageResource(R.drawable.ic_launcher_foreground);
             Picasso.with(mContext)
                     .load(recipePicture)
-                    .placeholder(R.drawable.ic_launcher_background)
+                    .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.ic_launcher_foreground)
                     .fit()
                     .into(holder.recipeImage);
         } else {
             Picasso.with(mContext)
                     .load(mRecipe.get(position).recipeImage)
-                    .placeholder(R.drawable.ic_launcher_background)
+                    .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.ic_launcher_foreground)
                     .fit()
                     .into(holder.recipeImage);
@@ -97,16 +100,14 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeAdap
 
     public class RecipeAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        CardView cardView;
-        ImageView recipeImage;
-        TextView recipeName;
+        @BindView(R.id.cv_list) CardView cardView;
+        @BindView(R.id.recipe_name) TextView recipeName;
+        @BindView(R.id.recipe_image) ImageView recipeImage;
 
         public RecipeAdapterViewHolder(View itemView) {
             super(itemView);
-            cardView = (CardView) itemView.findViewById(R.id.cv_list);
-            recipeImage = itemView.findViewById(R.id.recipe_image);
-            recipeName = itemView.findViewById(R.id.recipe_name);
 
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
