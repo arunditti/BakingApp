@@ -9,11 +9,11 @@
 ![screenshot_1539964688-3](https://user-images.githubusercontent.com/8518978/47230502-5cc98300-d398-11e8-8aaf-a8daae5f1d21.png)
 ![screenshot_1539964717](https://user-images.githubusercontent.com/8518978/47230304-e75db280-d397-11e8-84e5-6dcbdcf48ff4.png)
 ![screenshot_1539964739](https://user-images.githubusercontent.com/8518978/47230320-f17fb100-d397-11e8-83e2-efc31c05c13c.png)
-# Archicture Components
-- Room
-- LiveData
-- ViewModel
 # Libraries Used
+- RecyclerView
+- CardView
 - Butterknife
-
+- Picasso
+- Exoplayer
+- Espresso
 
