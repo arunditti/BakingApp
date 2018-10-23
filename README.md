@@ -1,5 +1,7 @@
 # BakingApp
- Baking App is an app that will allow a user to select a recipe and see video-guided steps for how to complete it.
+Created as part of Udacity's Android Developer NanoDegree course by Google
+# Project Overview
+Baking App is an app that will allow Udacity’s resident baker-in-chief, Miriam, to share her recipes with the world. The purpose of the app is to list all the baking recipies, and allow user to select a recipe and see video-guided steps for how to complete it.
 # Screenshots
 ![screenshot_1539480609-2](https://user-images.githubusercontent.com/8518978/47229440-c09e7c80-d395-11e8-83b6-e1c323b582e8.png)
 ![screenshot_1539480636](https://user-images.githubusercontent.com/8518978/47229463-c6945d80-d395-11e8-8a30-4a14e1eff589.png)
